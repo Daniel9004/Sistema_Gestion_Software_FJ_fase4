@@ -1,0 +1,9 @@
+# Archivos temporales de Python
+_pycache_/
+*.pyc
+
+# Registro de eventos del programa
+eventos.log
+
+# Entornos virtuales locales
+.venv/
