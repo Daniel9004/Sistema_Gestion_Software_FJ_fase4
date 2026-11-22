@@ -1,10 +1,13 @@
 
 # SOFTWARE FJ
 # ARCHIVO: main.py
-# DESCRIPCION: Menu principal del sistema.
+# DESCRIPCION: Menu principal del sistema de gestion.
 
-# Importamos el modulo encargado de gestionar clientes.
+# Importamos el gestor de clientes.
 from gestor_clientes import GestorClientes
+
+# Importamos el catalogo de servicios.
+from catalogo_servicios import CatalogoServicios
 
 # Importamos las excepciones personalizadas.
 from excepciones import ErrorCliente, ErrorValidacion
@@ -16,26 +19,27 @@ def mostrar_menu():
     print("\n===== SOFTWARE FJ =====")
     print("1. Registrar cliente")
     print("2. Consultar clientes")
-    print("3. Salir")
+    print("3. Consultar servicios")
+    print("4. Salir")
 
 
-# Funcion para registrar un nuevo cliente.
+# Funcion para registrar clientes.
 def registrar_cliente(gestor):
 
-    # Solicitamos la informacion al usuario.
+    # Solicitamos los datos del cliente.
     codigo = input("Codigo del cliente: ").strip()
     nombre = input("Nombre completo: ").strip()
     correo = input("Correo electronico: ").strip()
 
-    # Intentamos registrar el cliente.
+    # Intentamos registrar los datos.
     try:
         cliente = gestor.registrar(codigo, nombre, correo)
 
-    # Controlamos los errores de validacion.
+    # Capturamos los errores de registro.
     except (ErrorCliente, ErrorValidacion) as error:
         print("Error controlado:", error)
 
-    # Mostramos el resultado cuando todo funciona.
+    # Si el registro es correcto, mostramos el cliente.
     else:
         print("Cliente registrado correctamente.")
         print(cliente.mostrar_informacion())
@@ -44,54 +48,82 @@ def registrar_cliente(gestor):
 # Funcion para consultar los clientes registrados.
 def consultar_clientes(gestor):
 
-    # Obtenemos todos los clientes de la lista.
+    # Obtenemos los clientes almacenados.
     clientes = gestor.listar()
 
-    # Verificamos si la lista esta vacia.
+    # Verificamos si existen clientes.
     if not clientes:
         print("No hay clientes registrados.")
         return
 
-    # Mostramos los clientes existentes.
-    print("\nCLIENTES REGISTRADOS")
+    # Mostramos la informacion de cada cliente.
+    print("\n===== CLIENTES REGISTRADOS =====")
 
     for cliente in clientes:
         print(cliente.mostrar_informacion())
 
 
-# Funcion que controla la ejecucion principal.
+# Funcion para consultar los servicios.
+def consultar_servicios(catalogo):
+
+    # Obtenemos los servicios del catalogo.
+    servicios = catalogo.listar()
+
+    # Comprobamos si existen servicios.
+    if not servicios:
+        print("No hay servicios registrados.")
+        return
+
+    # Mostramos el encabezado.
+    print("\n===== SERVICIOS DISPONIBLES =====")
+
+    # Recorremos los servicios registrados.
+    for servicio in servicios:
+
+        # Aplicamos polimorfismo para describir cada servicio.
+        print(servicio.describir_servicio())
+
+
+# Funcion principal que controla el sistema.
 def ejecutar_programa():
 
-    # Creamos el gestor que conservara los clientes.
+    # Creamos el gestor que almacenara clientes.
     gestor = GestorClientes()
 
-    # Mantenemos el menu activo hasta que se elija salir.
+    # Creamos el catalogo de servicios.
+    catalogo = CatalogoServicios()
+
+    # Mantenemos el programa activo.
     while True:
 
-        # Mostramos las opciones disponibles.
+        # Mostramos el menu principal.
         mostrar_menu()
 
-        # Leemos la opcion seleccionada.
+        # Solicitamos una opcion al usuario.
         opcion = input("Seleccione una opcion: ").strip()
 
-        # Opcion para registrar un cliente.
+        # Opcion 1: Registrar cliente.
         if opcion == "1":
             registrar_cliente(gestor)
 
-        # Opcion para consultar clientes.
+        # Opcion 2: Consultar clientes.
         elif opcion == "2":
             consultar_clientes(gestor)
 
-        # Opcion para finalizar el programa.
+        # Opcion 3: Consultar servicios.
         elif opcion == "3":
+            consultar_servicios(catalogo)
+
+        # Opcion 4: Salir del programa.
+        elif opcion == "4":
             print("Gracias por utilizar Software FJ.")
             break
 
-        # Controlamos las opciones incorrectas.
+        # Controlamos una opcion incorrecta.
         else:
             print("Opcion no valida. Intente nuevamente.")
 
 
-# Punto de entrada del programa.
+# Punto de entrada de la aplicacion.
 if __name__ == "__main__":
     ejecutar_programa()
