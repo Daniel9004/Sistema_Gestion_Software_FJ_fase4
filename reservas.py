@@ -1,3 +1,9 @@
+# Importamos la clase Cliente para verificar los clientes.
+from cliente import Cliente
+
+# Importamos la clase Servicio para verificar los servicios.
+from servicio import Servicio
+
 # DESCRIPCION: Gestion de reservas de clientes y servicios
 
 # Importacion de excepciones personalizadas
@@ -64,6 +70,43 @@ class Reserva:
         self.estado = "Cancelada"
 
         return f"Reserva {self.codigo} cancelada correctamente."
+ # Metodo para procesar una reserva y calcular su costo.
+    def procesar(self, descuento=0, impuesto=0):
+
+        # Solo permitimos procesar reservas pendientes.
+        if self.estado != "Pendiente":
+            raise OperacionNoPermitida(
+                "Solo se pueden procesar reservas pendientes."
+            )
+
+        # Comprobamos que el cliente sea un objeto Cliente.
+        if not isinstance(self.cliente, Cliente):
+            raise ErrorReserva(
+                "La reserva debe tener un cliente valido."
+            )
+
+        # Comprobamos que el servicio sea un objeto Servicio.
+        if not isinstance(self.servicio, Servicio):
+            raise ErrorReserva(
+                "La reserva debe tener un servicio valido."
+            )
+
+        # Calculamos el costo y validamos los parametros del servicio.
+        total = self.servicio.calcular_costo(
+            self.duracion, descuento, impuesto
+        )
+
+        # Confirmamos la reserva despues de las validaciones.
+        self.confirmar()
+
+        # Guardamos el costo calculado.
+        self.costo_total = total
+
+        # Devolvemos un mensaje con el resultado.
+        return (
+            f"Reserva {self.codigo} procesada correctamente. "
+            f"Total: ${total:.2f}"
+        ) 
 
     # Metodo para consultar los datos de la reserva
     def consultar_reserva(self):
